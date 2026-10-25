@@ -1,0 +1,4 @@
+algoritmo,n,ms_frio,ms_minimo,ms_mediana,ms_media,ms_desv_est,ms_maximo,rondas,calentamiento
+Counting Sort,984,0.1047,0.0028,0.0031,0.0034,0.0023,0.0254,501,2000
+Radix Sort,984,0.2360,0.0173,0.0181,0.0182,0.0012,0.0413,501,2000
+Bucket Sort,984,0.1998,0.0071,0.0075,0.0077,0.0017,0.0317,501,2000

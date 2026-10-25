@@ -54,7 +54,7 @@ public class EscalamientoBucketSort {
         System.out.printf(java.util.Locale.US, "%s,%d,%d,%.3f%n", escenario, datos.length, k, tiempos[REPETICIONES / 2]);
     }
 
-    private static TermFrequency[] crearZipf(int n) {
+    static TermFrequency[] crearZipf(int n) {
         Random rnd = new Random(7);
         TermFrequency[] d = new TermFrequency[n];
         double c = 0.2 * n;                     // frecuencia del termino mas comun ~ proporcional a n
@@ -65,7 +65,7 @@ public class EscalamientoBucketSort {
         return d;
     }
 
-    private static TermFrequency[] crearUniforme(int n) {
+    static TermFrequency[] crearUniforme(int n) {
         Random rnd = new Random(11);
         TermFrequency[] d = new TermFrequency[n];
         for (int i = 0; i < n; i++) {
