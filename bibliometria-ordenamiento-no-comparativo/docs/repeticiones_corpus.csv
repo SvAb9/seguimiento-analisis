@@ -1,0 +1,16 @@
+ejecucion,algoritmo,ms_mediana
+1,Counting Sort,0.0030
+1,Radix Sort,0.0178
+1,Bucket Sort,0.0074
+2,Counting Sort,0.0031
+2,Radix Sort,0.0180
+2,Bucket Sort,0.0075
+3,Counting Sort,0.0034
+3,Radix Sort,0.0201
+3,Bucket Sort,0.0083
+4,Counting Sort,0.0030
+4,Radix Sort,0.0177
+4,Bucket Sort,0.0073
+5,Counting Sort,0.0031
+5,Radix Sort,0.0181
+5,Bucket Sort,0.0075

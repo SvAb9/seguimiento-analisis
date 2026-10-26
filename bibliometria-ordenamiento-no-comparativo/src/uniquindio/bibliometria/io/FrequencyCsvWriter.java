@@ -9,18 +9,27 @@ import uniquindio.bibliometria.model.TermFrequency;
 
 /**
  * Escribe un TermFrequency[] como CSV "termino,frecuencia" (UTF-8 sin BOM, con
- * encabezado), en el mismo orden del arreglo. Es el formato que lee FrequencyCsvReader.
+ * encabezado), en el mismo orden del arreglo. Es el formato que lee FrequencyCsvReader,
+ * que ignora la linea de comentario "#" opcional del comienzo.
  */
 public final class FrequencyCsvWriter {
 
     private FrequencyCsvWriter() {
     }
 
-    public static void write(Path archivo, TermFrequency[] lista) throws IOException {
+    public static void write(Path archivo, TermFrequency[] datos) throws IOException {
+        write(archivo, datos, null);
+    }
+
+    public static void write(Path archivo, TermFrequency[] datos, String comentario) throws IOException {
         try (BufferedWriter bw = Files.newBufferedWriter(archivo, StandardCharsets.UTF_8)) {
+            if (comentario != null) {
+                bw.write("# " + comentario);
+                bw.newLine();
+            }
             bw.write("termino,frecuencia");
             bw.newLine();
-            for (TermFrequency t : lista) {
+            for (TermFrequency t : datos) {
                 bw.write(t.getTerm() + "," + t.getFrequency());
                 bw.newLine();
             }
