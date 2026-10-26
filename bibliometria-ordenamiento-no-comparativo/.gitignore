@@ -1,0 +1,9 @@
+# Clases compiladas
+out/
+sources.txt
+
+# Los 20 PDF del corpus (44 MB, los entrega el docente). Los abstracts extraidos
+# quedan versionados en corpus/abstracts/ y las frecuencias en data/frecuencias_corpus.csv.
+corpus/pdf/
+
+.DS_Store

@@ -14,13 +14,25 @@ bibliometria-ordenamiento-no-comparativo/
 │   ├── model/TermFrequency.java        # (término, frecuencia) – contrato común
 │   ├── sorting/FrequencySorter.java    # interfaz que implementan los 3 algoritmos
 │   ├── sorting/BucketSort.java         # ✅ Sara
-│   ├── sorting/CountingSort.java       # ⏳ Zuleta (TODO)
+│   ├── sorting/CountingSort.java       # ✅ Zuleta
 │   ├── sorting/RadixSort.java          # ⏳ Natalia (TODO)
 │   ├── sorting/Ranking.java            # top-N, comparar rankings, imprimir
 │   ├── io/FrequencyCsvReader.java      # lee "termino,frecuencia"
-│   └── app/DemoBucketSort.java         # ejecuta Bucket Sort y muestra el top-15
+│   ├── io/FrequencyCsvWriter.java      # escribe "termino,frecuencia"
+│   ├── model/Article.java              # título, autores y abstract de un artículo
+│   ├── extraction/ArticleExtractor.java    # ✅ Zuleta – lee los PDF con PDFBox
+│   ├── preprocessing/TextPreprocessor.java # ✅ Zuleta – minúsculas, tokens, stopwords
+│   ├── app/ConstruirCorpus.java        # PDF -> data/frecuencias_corpus.csv
+│   ├── app/DemoBucketSort.java         # ejecuta Bucket Sort y muestra el top-15
 │   └── app/EscalamientoBucketSort.java # comprobación empírica de la complejidad
 ├── test/uniquindio/bibliometria/BucketSortTest.java
+├── test/uniquindio/bibliometria/CountingSortTest.java
+├── lib/pdfbox-app-3.0.3.jar            # Apache PDFBox (única librería externa)
+├── corpus/pdf/                         # los 20 PDF del docente (no se suben al repo)
+├── corpus/abstracts/                   # abstract extraído de cada artículo (NN.txt)
+├── data/frecuencias_corpus.csv         # frecuencias REALES del corpus, orden alfabético
+├── data/articulos.csv                  # id, archivo, título, autores de cada artículo
+├── data/stopwords_en.txt               # stopwords del inglés (NLTK)
 ├── data/frecuencias_ejemplo.csv        # DATOS SINTÉTICOS (no son del corpus real)
 ├── docs/analisis_bucket_sort.md        # conteo de operaciones T(n) de Bucket Sort
 ├── docs/resultados_escalamiento.csv
@@ -30,15 +42,29 @@ bibliometria-ordenamiento-no-comparativo/
 
 ## Compilar y probar
 
-Requiere JDK 11 o superior (se probó con 21). Sin librerías externas.
+Requiere JDK 11 o superior (se probó con 21). La única librería externa es Apache PDFBox, incluida en `lib/`.
 
 ```bash
 ./scripts/compilar_y_probar.sh        # Linux / macOS
 scripts\compilar_y_probar.bat         # Windows
 ```
 
-Hace `javac`, corre `BucketSortTest` (debe decir `0 fallos`) y la demo. Para la comprobación de escalamiento:
-`java -cp out uniquindio.bibliometria.app.EscalamientoBucketSort`.
+Hace `javac`, corre `BucketSortTest` y `CountingSortTest` (deben decir `0 fallos`) y la demo. Para la comprobación
+de escalamiento: `java -cp out uniquindio.bibliometria.app.EscalamientoBucketSort`.
+
+## Construir la lista de frecuencias del corpus
+
+Copie los 20 PDF del docente en `corpus/pdf/` (conservando el número inicial del nombre, `1. ...pdf` a `20. ...pdf`) y,
+después de compilar:
+
+```bash
+java -cp "out:lib/*" uniquindio.bibliometria.app.ConstruirCorpus     # Linux / macOS
+java -cp "out;lib/*" uniquindio.bibliometria.app.ConstruirCorpus     # Windows
+```
+
+Genera `data/frecuencias_corpus.csv`, `data/articulos.csv` y `corpus/abstracts/NN.txt`, e imprime `n`, la frecuencia
+mínima y máxima, `k` y el top-15. Resultado actual: 20 artículos, 2.528 términos tras el preprocesamiento,
+**n = 992** términos distintos, frecuencias entre 1 y 86 (**k = 86**).
 
 ## Contrato común (importante para que los 3 algoritmos coincidan)
 
@@ -52,13 +78,16 @@ Todo algoritmo implementa `FrequencySorter.sortDescending(TermFrequency[])` y de
 Como los tres son estables, **si la lista de entrada está en orden alfabético los empates salen alfabéticos en los
 tres** y el top-15 de cada algoritmo es idéntico. `Ranking.mismoTop(a, b, 15)` lo verifica.
 
-## Para Zuleta
+## Parte de Zuleta (terminada)
 
-- Exportar el resultado del preprocesamiento como CSV UTF-8 `termino,frecuencia` **ordenado alfabéticamente**
-  (o construir directamente un `TermFrequency[]`). `FrequencyCsvReader.read(path)` ya lo carga.
-- Implementar `CountingSort` (hoy lanza `UnsupportedOperationException`). Puede ser el esquema de `docs/analisis_bucket_sort.md`
-  (secciones 3.3 del informe) adaptado a `TermFrequency[]`; recuerde recorrer la entrada de derecha a izquierda para ser estable.
-- Entregar para el informe: número de términos distintos `n`, frecuencia mínima y máxima del corpus (para `k`).
+- `CountingSort`: clave `x = f − mín`, contadores acumulados de la clave mayor a la menor (así sale descendente sin
+  invertir) y colocación de derecha a izquierda (estable). O(n + k).
+- Extracción: el abstract empieza en "A B S T R A C T" / "Abstract" y termina en "Keywords", en la introducción o, en
+  Elsevier, al cerrar el párrafo. Se unen las palabras partidas en sílabas al final de línea. Los 20 abstracts se
+  revisaron a mano en `corpus/abstracts/`.
+- Preprocesamiento: NFKD sin tildes, minúsculas, términos = secuencias de letras `a-z`, se descartan los de una letra y
+  las stopwords de `data/stopwords_en.txt`. Sin lematización.
+- Los autores salen de los metadatos del PDF y en varios artículos están incompletos (no se usan en el ranking).
 
 ## Para Natalia
 
