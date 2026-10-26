@@ -1,7 +1,5 @@
-# Stopwords del ingles: lista de NLTK (corpus "stopwords", idioma "english").
-# Las formas con apostrofo de NLTK ("don't", "it's"...) no hacen falta: el tokenizador
-# separa en el apostrofo y sus partes ya estan en la lista o tienen una sola letra.
-# Al final se agregan los numerales romanos que los abstracts usan para enumerar (i, ii, iii, iv).
+# Stopwords en ingles: lista estandar de NLTK (sin las formas con apostrofo, que el tokenizador ya separa)
+# mas palabras funcionales y numerales romanos frecuentes en abstracts cientificos (al final). Una por linea.
 i
 me
 my
@@ -155,7 +153,28 @@ wasn
 weren
 won
 wouldn
-# numerales romanos de enumeraciones
+# --- adicionales ---
+also
+would
+could
+may
+might
+must
+shall
+however
+thus
+hence
+therefore
+whereof
+yet
+via
+among
+within
+without
+upon
 ii
 iii
 iv
+vi
+eg
+ie

@@ -1,3 +1,4 @@
+# Frecuencias de terminos en los abstracts de los 20 articulos (generado por ConstruirCorpus)
 termino,frecuencia
 aaa,1
 able,2
@@ -53,10 +54,8 @@ alike,1
 almost,1
 alongside,1
 already,1
-also,11
 although,4
 america,2
-among,5
 amount,1
 analysed,2
 analyses,3
@@ -213,7 +212,6 @@ contribute,1
 contributed,1
 control,4
 corpus,1
-could,1
 countries,1
 course,1
 create,1
@@ -422,7 +420,6 @@ harness,1
 help,4
 helping,1
 helps,1
-hence,1
 higher,16
 highlight,1
 highlighted,1
@@ -433,7 +430,6 @@ history,1
 holistic,1
 holistically,1
 hotly,1
-however,3
 human,12
 identified,6
 identifies,2
@@ -566,7 +562,6 @@ materials,1
 mathematics,1
 matrix,1
 matters,1
-may,4
 meaningfully,1
 medical,1
 met,3
@@ -910,7 +905,6 @@ thinking,1
 threats,1
 three,6
 throughout,1
-thus,2
 time,2
 took,1
 tool,2
@@ -954,7 +948,6 @@ unsatisfactory,1
 unspecific,1
 untruthful,1
 update,1
-upon,1
 usage,2
 use,10
 used,9
@@ -977,15 +970,12 @@ weak,1
 weaknesses,1
 web,2
 well,6
-whereof,1
 whilst,1
 widely,1
-within,5
 work,3
 workload,1
 works,1
 worsen,1
-would,1
 written,1
 xplore,1
 year,2

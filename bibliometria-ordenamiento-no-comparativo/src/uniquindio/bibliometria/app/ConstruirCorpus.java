@@ -26,7 +26,8 @@ import uniquindio.bibliometria.sorting.Ranking;
 /**
  * Construye la lista de frecuencias del corpus a partir de los 20 PDF (parte de Zuleta).
  *
- * Entradas:  corpus/pdf/*.pdf  y  data/stopwords_en.txt
+ * Entradas:  corpus/pdf/*.pdf, data/stopwords_en.txt y data/metadatos_articulos.tsv
+ *            (titulo y autores verificados a mano; reemplazan a los metadatos del PDF, que estan incompletos)
  * Salidas:
  *   corpus/abstracts/NN.txt      abstract extraido de cada articulo (para revisarlo a mano)
  *   data/articulos.csv           id, archivo, titulo, autores, palabras del abstract
@@ -54,12 +55,17 @@ public class ConstruirCorpus {
 
         Set<String> stopwords = TextPreprocessor.leerStopwords(Paths.get("data/stopwords_en.txt"));
         TextPreprocessor pre = new TextPreprocessor(stopwords);
+        Map<Integer, String[]> verificados = leerMetadatos(Paths.get("data/metadatos_articulos.tsv"));
 
         List<Article> articulos = new ArrayList<>();
         Map<String, Integer> conteo = new TreeMap<>();      // TreeMap: los terminos quedan en orden alfabetico
         int totalTerminos = 0;
         for (File pdf : pdfs) {
             Article a = ArticleExtractor.extract(numero(pdf.getName()), pdf);
+            String[] meta = verificados.get(a.getId());
+            if (meta != null) {
+                a = new Article(a.getId(), a.getFile(), meta[0], meta[1], a.getAbstractText());
+            }
             articulos.add(a);
             Files.writeString(carpetaAbstracts.resolve(String.format("%02d.txt", a.getId())),
                 a.getTitle() + System.lineSeparator() + System.lineSeparator() + a.getAbstractText()
@@ -75,7 +81,8 @@ public class ConstruirCorpus {
         for (Map.Entry<String, Integer> e : conteo.entrySet()) {
             lista[i++] = new TermFrequency(e.getKey(), e.getValue());
         }
-        FrequencyCsvWriter.write(Paths.get("data/frecuencias_corpus.csv"), lista);
+        FrequencyCsvWriter.write(Paths.get("data/frecuencias_corpus.csv"), lista,
+            "Frecuencias de terminos en los abstracts de los 20 articulos (generado por ConstruirCorpus)");
         escribirArticulos(Paths.get("data/articulos.csv"), articulos);
 
         int min = Integer.MAX_VALUE;
@@ -89,6 +96,22 @@ public class ConstruirCorpus {
         System.out.println("Terminos distintos (n): " + lista.length);
         System.out.println("Frecuencia minima: " + min + "  maxima: " + max + "  k = max - min + 1 = " + (max - min + 1));
         Ranking.imprimir("Top 15 (Counting Sort)", Ranking.top(new CountingSort().sortDescending(lista), 15));
+    }
+
+    /** Lee "id \t titulo \t autores"; ignora comentarios "#" y el encabezado. Si el archivo no existe, devuelve un mapa vacio. */
+    private static Map<Integer, String[]> leerMetadatos(Path archivo) throws IOException {
+        Map<Integer, String[]> mapa = new TreeMap<>();
+        if (!Files.exists(archivo)) {
+            return mapa;
+        }
+        for (String linea : Files.readAllLines(archivo, StandardCharsets.UTF_8)) {
+            String[] campos = linea.split("\t");
+            if (linea.startsWith("#") || campos.length < 3 || !campos[0].trim().matches("\\d+")) {
+                continue;
+            }
+            mapa.put(Integer.parseInt(campos[0].trim()), new String[] {campos[1].trim(), campos[2].trim()});
+        }
+        return mapa;
     }
 
     /** Numero inicial del nombre del archivo ("7. Human-centred ..." -> 7). */
